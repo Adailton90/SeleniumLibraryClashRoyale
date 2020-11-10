@@ -63,23 +63,13 @@ try:
     response = requests.request("GET", url, headers=headers)
     data = response.json()
     tag = data['items'][0]['tag']
-
-    print(data)
+    tag=tag.replace('#','%23')
 
 #pegando lista de membros do clã
 
-    url2 = base_url+'clans?'+tag+'/members'     
-    #token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjM5OTgzMmYyLTQzNjUtNDQzNS1hYmIzLTQyN2U4OGJlODkzMSIsImlhdCI6MTYwNTAxNjA2Miwic3ViIjoiZGV2ZWxvcGVyLzc4Y2E1NmExLWM2MDQtYWFkNC04NGM3LTY2N2I1ODQwOWE5OSIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxNzkuNzAuMTA2LjE5NSJdLCJ0eXBlIjoiY2xpZW50In1dfQ.boPfJ7lLxEfxpo8fzlN9c67CN9GaYDfFfYWGYr8Cg3T9aAG2YlPu2ARDBog8o1OfHTnbODiAg4YrL51HrfyqJQ'
+    url2 = base_url+'clans/'+tag+'/members'     
     response = requests.request("GET", url2, headers=headers)
-    #members = response.json()
-    print(url2)
+    members = response.json()
+    print(members)
 except requests.exceptions.RequestException as e:
     raise SystemExit(e)
-
-
-
-
-
-    
-
-
