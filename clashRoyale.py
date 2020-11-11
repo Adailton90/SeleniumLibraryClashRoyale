@@ -5,11 +5,11 @@ from selenium.webdriver.support import expected_conditions as EC
 import requests
 import pandas as pd
 import json
-from csv import DictWriter
+import os
 
 
-USER= 'adailton.silva10@live.com'
-PASSWORD='12345678'
+USER= 'seu usário para login'
+PASSWORD='sua senha para login'
 key_name='chave_random'
 new_description= 'gerando chave aleatoria'
 base_url = 'https://api.clashroyale.com/v1/'
@@ -17,12 +17,12 @@ base_url = 'https://api.clashroyale.com/v1/'
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--incognito")
-'''
+
 try:
     
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path='./chromedriver.exe')
     driver.get('https://developer.clashroyale.com/#/login')
-    #driver.maximize_window()
+    driver.maximize_window()
     
     username = WebDriverWait(driver, 10).until( EC.presence_of_element_located((By.ID, "email")))
     passwordPage = WebDriverWait(driver, 10).until( EC.presence_of_element_located((By.ID, "password")))
@@ -55,15 +55,14 @@ try:
 except TimeoutError as err:
     isrunning = 0
     print("Exception has been thrown. " + str(err))
-finally:
-    driver.quit
-'''
+   
+
 
 #obtendo as informações do clã de nome "The resistance", cuja tag começa com #9V2Y e que esteja localizado no Brasil
 try:
     url = base_url+'clans?name=The resistance&locationId=57000038&limit=1'     
-    token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjM5OTgzMmYyLTQzNjUtNDQzNS1hYmIzLTQyN2U4OGJlODkzMSIsImlhdCI6MTYwNTAxNjA2Miwic3ViIjoiZGV2ZWxvcGVyLzc4Y2E1NmExLWM2MDQtYWFkNC04NGM3LTY2N2I1ODQwOWE5OSIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxNzkuNzAuMTA2LjE5NSJdLCJ0eXBlIjoiY2xpZW50In1dfQ.boPfJ7lLxEfxpo8fzlN9c67CN9GaYDfFfYWGYr8Cg3T9aAG2YlPu2ARDBog8o1OfHTnbODiAg4YrL51HrfyqJQ'
-    headers = {'Authorization': 'Bearer ' + token}
+    #token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjM5OTgzMmYyLTQzNjUtNDQzNS1hYmIzLTQyN2U4OGJlODkzMSIsImlhdCI6MTYwNTAxNjA2Miwic3ViIjoiZGV2ZWxvcGVyLzc4Y2E1NmExLWM2MDQtYWFkNC04NGM3LTY2N2I1ODQwOWE5OSIsInNjb3BlcyI6WyJyb3lhbGUiXSwibGltaXRzIjpbeyJ0aWVyIjoiZGV2ZWxvcGVyL3NpbHZlciIsInR5cGUiOiJ0aHJvdHRsaW5nIn0seyJjaWRycyI6WyIxNzkuNzAuMTA2LjE5NSJdLCJ0eXBlIjoiY2xpZW50In1dfQ.boPfJ7lLxEfxpo8fzlN9c67CN9GaYDfFfYWGYr8Cg3T9aAG2YlPu2ARDBog8o1OfHTnbODiAg4YrL51HrfyqJQ'
+    headers = {'Authorization': 'Bearer ' + token.text}
     response = requests.request("GET", url, headers=headers)
     data = response.json()
     tag = data['items'][0]['tag']
@@ -86,6 +85,10 @@ for element in members['items']:
     data.append(( element['name'], element['expLevel'], element['trophies'], element['role']))
 
 df = pd.DataFrame(data)
-df.columns = ['name','expLevel','trophies','role']
-df.to_csv('membros.csv', header=['name','expLevel','trophies','role'],encodingstr='utf-8')
-#print(df)
+df.columns = ['Nome','Level','Troféus','Papel']
+
+df.to_csv('membros.csv', header = True, index=False, encoding='utf-8')
+
+#fechando driver
+driver.quit()
+
